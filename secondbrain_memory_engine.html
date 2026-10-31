@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101321">
+<title>SecondBrain — личная память</title>
+<style>
+:root{--bg:#0d1020;--panel:#151a2c;--panel2:#1c2237;--line:#29314a;--text:#f4f6ff;--muted:#9aa4bd;--accent:#9a8cff;--green:#72d6b0;--yellow:#f2c879;--red:#f18d9b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#202044 0%,transparent 38%),var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer}.app{max-width:1180px;margin:auto;padding:22px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}.brand{display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#a99cff,#5c68ca);display:grid;place-items:center;font-size:22px;box-shadow:0 8px 30px #8176ff33}.brand h1{font-size:19px;margin:0;letter-spacing:.2px}.brand small{display:block;color:var(--muted);font-size:11px}.top-actions{display:flex;align-items:center;gap:10px}.status{font-size:12px;color:var(--green);border:1px solid #285b50;padding:6px 10px;border-radius:99px}.avatar{width:36px;height:36px;border-radius:50%;background:#343b5c;display:grid;place-items:center;font-weight:700}
+.layout{display:grid;grid-template-columns:225px minmax(0,1fr);gap:22px}.sidebar,.panel,.stat,.memory-card,.suggestion,.welcome{background:rgba(21,26,44,.88);border:1px solid var(--line);border-radius:18px}.sidebar{padding:14px;height:max-content;position:sticky;top:14px}.nav-label{color:#727e9c;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;padding:10px 11px 7px}.nav button{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:var(--muted);padding:11px;border-radius:11px;text-align:left;margin:2px 0}.nav button:hover,.nav button.active{background:#282d49;color:white}.nav .ico{width:20px;text-align:center;font-size:17px}.side-note{margin-top:18px;padding:13px;background:#202640;border-radius:13px;color:var(--muted);font-size:12px}.side-note strong{display:block;color:#e5e7ff;margin-bottom:4px}
+main{min-width:0}.page{display:none}.page.active{display:block}.welcome{padding:24px;margin-bottom:17px;background:linear-gradient(115deg,#24264a,#171d34 68%);position:relative;overflow:hidden}.welcome:after{content:"✧";position:absolute;right:28px;top:3px;font-size:110px;color:#9c91ff18}.eyebrow{font-size:11px;color:#b4aaff;letter-spacing:1.3px;text-transform:uppercase}.welcome h2{font-size:26px;line-height:1.2;margin:8px 0}.welcome p{color:#b5bdd2;margin:0;max-width:520px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.stat{padding:15px}.stat .num{font-size:25px;font-weight:750}.stat .label{font-size:12px;color:var(--muted)}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:22px 0 12px}.section-head h3{font-size:16px;margin:0}.muted{color:var(--muted)}.btn{border:1px solid var(--line);background:#242b44;color:var(--text);padding:10px 14px;border-radius:11px}.btn:hover{filter:brightness(1.12)}.btn.primary{background:linear-gradient(135deg,#9284ff,#6d70d9);border:0;color:white;font-weight:650}.btn.ghost{background:transparent}.btn.small{padding:7px 10px;font-size:12px}.btn.danger{color:#ffb5bf;border-color:#633b4a;background:#321f2b}.memory-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.memory-card{padding:15px}.card-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.tag{font-size:10px;padding:4px 8px;border-radius:99px;background:#292e4b;color:#c5c1ff}.memory-card h4{margin:11px 0 5px;font-size:15px}.memory-card p{margin:0;color:#b0bad0;font-size:13px}.meta{font-size:11px;color:#7f8ba8;margin-top:13px;display:flex;justify-content:space-between;gap:8px}.empty{border:1px dashed #39415e;padding:24px;text-align:center;border-radius:15px;color:var(--muted);grid-column:1/-1}
+.searchbar{display:flex;gap:9px;margin-bottom:14px}.field{width:100%;background:#101528;border:1px solid var(--line);border-radius:11px;padding:12px 13px;color:var(--text);outline:none}.field:focus{border-color:#8c80f2;box-shadow:0 0 0 3px #8c80f222}textarea.field{min-height:115px;resize:vertical}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.form-group label{font-size:12px;color:var(--muted)}.form-actions{display:flex;gap:9px;flex-wrap:wrap}.panel{padding:18px}.suggestion{padding:15px;margin-bottom:10px;border-color:#5a5039;background:#211f2a}.suggestion .tag{background:#433927;color:#f5d99e}.suggestion p{font-size:13px;color:#c1c7d7}.suggestion-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}.toggle-row:last-child{border:0}.toggle-row strong{display:block;font-size:14px}.toggle-row small{color:var(--muted);display:block;font-size:12px}.switch{appearance:none;width:43px;height:24px;background:#424a63;border-radius:99px;position:relative;flex:none;cursor:pointer}.switch:checked{background:#8175e8}.switch:after{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:white;transition:.2s}.switch:checked:after{transform:translateX(19px)}
+.notice{padding:12px 14px;background:#202b39;border:1px solid #344b54;color:#b9d9d1;border-radius:12px;font-size:12px;margin:12px 0}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#28324a;border:1px solid #596383;color:white;padding:11px 16px;border-radius:12px;display:none;z-index:10;box-shadow:0 10px 35px #0008}.toast.show{display:block}.modal-back{position:fixed;inset:0;background:#070914cc;display:none;align-items:center;justify-content:center;padding:16px;z-index:5}.modal-back.show{display:flex}.modal{width:min(560px,100%);max-height:90vh;overflow:auto;background:#171d31;border:1px solid #3a4260;border-radius:18px;padding:20px}.modal h3{margin-top:0}.close{float:right;background:transparent;border:0;color:var(--muted);font-size:22px}
+footer{color:#6f7892;font-size:11px;text-align:center;padding:24px 0 8px}
+@media(max-width:760px){.app{padding:14px}.layout{grid-template-columns:1fr;gap:14px}.sidebar{position:static;padding:8px;overflow:auto}.nav{display:flex;gap:4px}.nav-label,.side-note{display:none}.nav button{width:auto;white-space:nowrap;padding:9px 11px;font-size:12px}.nav .ico{display:none}.welcome{padding:20px}.welcome h2{font-size:23px}.memory-list{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:11px}.stat .num{font-size:21px}.stat .label{font-size:10px}.topbar{margin-bottom:14px}.status{display:none}.form-grid{grid-template-columns:1fr}.section-head{margin-top:18px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand"><div class="logo">✧</div><div><h1>SecondBrain</h1><small>Твоя личная память</small></div></div>
+  <div class="top-actions"><span class="status">● Данные хранятся на устройстве</span><div class="avatar">Я</div></div>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav-label">Рабочее пространство</div>
+  <nav class="nav">
+    <button class="active" data-page="home"><span class="ico">⌂</span>Обзор</button>
+    <button data-page="memories"><span class="ico">▤</span>Моя память</button>
+    <button data-page="inbox"><span class="ico">✧</span>На проверку <span id="pendingBadge" class="tag">0</span></button>
+    <button data-page="search"><span class="ico">⌕</span>Поиск</button>
+    <button data-page="engine"><span class="ico">✧</span>Разбор текста</button>
+    <button data-page="privacy"><span class="ico">♧</span>Приватность</button>
+  </nav>
+  <div class="side-note"><strong>Твоя память под контролем</strong>Ты можешь просмотреть, экспортировать или удалить свои данные в любой момент.</div>
+</aside>
+<main>
+<section class="page active" id="page-home">
+  <div class="welcome"><div class="eyebrow">Личное пространство</div><h2>Привет! Что сохраним<br>в твоей памяти?</h2><p>Собирай идеи, планы и полезную информацию в одном месте. SecondBrain поможет быстро найти их позже.</p><div style="margin-top:17px"><button class="btn primary" onclick="openAdd()">＋ Добавить воспоминание</button></div></div>
+  <div class="stats">
+    <div class="stat"><div class="num" id="statMem">0</div><div class="label">Воспоминаний</div></div>
+    <div class="stat"><div class="num" id="statPending">0</div><div class="label">Ждут проверки</div></div>
+    <div class="stat"><div class="num" id="statCats">0</div><div class="label">Категорий</div></div>
+  </div>
+  <div class="section-head"><h3>Недавно сохранено</h3><button class="btn ghost small" onclick="go('memories')">Все записи →</button></div>
+  <div class="memory-list" id="recentList"></div>
+  <div class="section-head"><h3>Как работает память</h3></div>
+  <div class="panel"><p class="muted" style="margin:0;font-size:13px">Добавляй информацию вручную или импортируй текст. В этой демоверсии приложение не читает другие приложения и переписки. Подключение источников появится позже — только с отдельного разрешения и через поддерживаемые способы.</p></div>
+</section>
+<section class="page" id="page-memories">
+  <div class="section-head"><div><h2 style="margin:0;font-size:22px">Моя память</h2><div class="muted" style="font-size:12px">Все сохранённые факты и идеи</div></div><button class="btn primary" onclick="openAdd()">＋ Добавить</button></div>
+  <div class="searchbar"><input id="memoryFilter" class="field" placeholder="Фильтр по названию или тексту..." oninput="renderMemories()"></div>
+  <div class="memory-list" id="allList"></div>
+</section>
+<section class="page" id="page-inbox">
+  <div class="section-head"><div><h2 style="margin:0;font-size:22px">На проверку</h2><div class="muted" style="font-size:12px">Информация, которую нужно подтвердить</div></div></div>
+  <div class="notice">Личные разговоры, договорённости и чувствительные сведения не должны попадать в память автоматически. Сначала проверь содержание и подтверди сохранение.</div>
+  <div id="pendingList"></div>
+  <div class="panel" style="margin-top:14px"><h3 style="margin-top:0">Добавить предложение на проверку</h3><p class="muted" style="font-size:12px">Например, важная договорённость из переписки, которую ты импортировал сам.</p><textarea id="pendingText" class="field" placeholder="Вставь текст, который нужно проверить..."></textarea><div style="margin-top:10px"><button class="btn" onclick="addPending()">Отправить на проверку</button></div></div>
+</section>
+
+<section class="page" id="page-engine">
+  <div class="section-head"><div><h2 style="margin:0;font-size:22px">Memory Engine</h2><div class="muted" style="font-size:12px">Преврати большой текст в отдельные воспоминания</div></div></div>
+  <div class="panel">
+    <div class="notice">Вставь текст, который ты сам выбрал или скопировал. Анализ выполняется локально в браузере: текст никуда не отправляется. Это первая версия на правилах, не полноценный ИИ.</div>
+    <div class="form-group"><label for="engineInput">Текст для разбора</label><textarea id="engineInput" class="field" style="min-height:180px" placeholder="Например: Я изучаю создание сайтов. На следующей неделе хочу позвонить в стоматологию. Мне понравилась идея приложения для заметок."></textarea></div>
+    <div class="form-actions"><button class="btn primary" onclick="analyzeText()">✧ Разобрать текст</button><button class="btn ghost" onclick="document.getElementById('engineInput').value='';document.getElementById('engineResults').innerHTML=''">Очистить</button></div>
+    <div id="engineStatus" class="muted" style="font-size:12px;margin-top:10px"></div>
+  </div>
+  <div class="section-head"><h3>Найденные фрагменты</h3></div>
+  <div id="engineResults"><div class="empty">Вставь текст и нажми «Разобрать текст».</div></div>
+  <div class="notice">Личные сведения, здоровье, финансы и договорённости автоматически не сохраняются: их можно только отправить на отдельную проверку.</div>
+</section>
+
+<section class="page" id="page-search">
+  <div class="section-head"><div><h2 style="margin:0;font-size:22px">Поиск по памяти</h2><div class="muted" style="font-size:12px">Найди то, что уже сохранил</div></div></div>
+  <div class="searchbar"><input id="query" class="field" placeholder="Например: что я хотел изучить?" oninput="doSearch()"><button class="btn primary" onclick="doSearch()">Найти</button></div>
+  <div class="muted" style="font-size:12px;margin:8px 0 12px">Пока работает поиск по словам и фразам. Семантический ИИ-поиск подключим отдельным этапом.</div>
+  <div class="memory-list" id="searchResults"></div>
+</section>
+<section class="page" id="page-privacy">
+  <div class="section-head"><div><h2 style="margin:0;font-size:22px">Приватность и данные</h2><div class="muted" style="font-size:12px">Ты решаешь, что хранить</div></div></div>
+  <div class="panel">
+    <div class="notice">Сейчас это локальный прототип: записи сохраняются в хранилище браузера на этом устройстве. Синхронизации с облаком и доступа к чатам нет.</div>
+    <div class="toggle-row"><div><strong>Автосохранение обычных фактов</strong><small>В будущем — только для разрешённых источников и несенситивных данных.</small></div><input class="switch" type="checkbox" id="autoSave" checked></div>
+    <div class="toggle-row"><div><strong>Подтверждать личные сведения</strong><small>Договорённости и чувствительные данные требуют проверки.</small></div><input class="switch" type="checkbox" id="confirmSensitive" checked disabled></div>
+    <div class="toggle-row"><div><strong>Локальное хранение</strong><small>В этой версии данные остаются в браузере.</small></div><span class="tag">Включено</span></div>
+    <div class="section-head"><h3>Управление данными</h3></div>
+    <div class="form-actions"><button class="btn" onclick="exportData()">Экспортировать память</button><button class="btn" onclick="document.getElementById('importFile').click()">Импортировать JSON</button><button class="btn danger" onclick="clearAll()">Удалить все данные</button><input type="file" id="importFile" accept=".json,application/json" hidden onchange="importData(event)"></div>
+  </div>
+</section>
+<footer>SecondBrain MVP · Прототип · Данные хранятся локально в браузере</footer>
+</main>
+</div>
+</div>
+<div class="modal-back" id="addModal"><div class="modal"><button class="close" onclick="closeAdd()">×</button><h3>Новое воспоминание</h3><p class="muted" style="font-size:12px">Сохрани идею, факт или полезную информацию.</p>
+<form id="addForm"><div class="form-group"><label for="title">Название</label><input id="title" class="field" required maxlength="90" placeholder="Например: Идея для проекта"></div><div class="form-group"><label for="content">Содержание</label><textarea id="content" class="field" required placeholder="Запиши всё, что важно не забыть..."></textarea></div><div class="form-grid"><div class="form-group"><label for="category">Категория</label><select id="category" class="field"><option>Идеи</option><option>Работа</option><option>Личное</option><option>Обучение</option><option>Планы</option><option>Другое</option></select></div><div class="form-group"><label for="kind">Тип записи</label><select id="kind" class="field"><option value="обычная">Обычная информация</option><option value="важная">Важная информация</option></select></div></div><div class="form-actions"><button class="btn primary" type="submit">Сохранить в память</button><button class="btn ghost" type="button" onclick="closeAdd()">Отмена</button></div></form></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='secondbrain_mvp_v1';
+let memories=[], pending=[];
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');memories=Array.isArray(d.memories)?d.memories:[];pending=Array.isArray(d.pending)?d.pending:[]}catch(e){memories=[];pending=[]}renderAll()}
+function save(){localStorage.setItem(KEY,JSON.stringify({memories,pending}));renderAll()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function dateLabel(d){return new Date(d).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'})}
+function card(m){return `<article class="memory-card"><div class="card-top"><span class="tag">${esc(m.category||'Другое')}</span><span class="muted" style="font-size:10px">${esc(m.kind||'обычная')}</span></div><h4>${esc(m.title)}</h4><p>${esc(m.content)}</p><div class="meta"><span>${dateLabel(m.date)}</span><button class="btn ghost small" onclick="deleteMemory('${m.id}')">Удалить</button></div></article>`}
+function renderAll(){renderHome();renderMemories();renderPending();document.getElementById('pendingBadge').textContent=pending.length;document.getElementById('statMem').textContent=memories.length;document.getElementById('statPending').textContent=pending.length;document.getElementById('statCats').textContent=new Set(memories.map(m=>m.category)).size}
+function renderHome(){const el=document.getElementById('recentList');el.innerHTML=memories.length?memories.slice().sort((a,b)=>b.date-a.date).slice(0,4).map(card).join(''):'<div class="empty">Пока здесь пусто. Добавь первое воспоминание.</div>'}
+function renderMemories(){const q=(document.getElementById('memoryFilter')?.value||'').toLowerCase();const arr=memories.filter(m=>(m.title+' '+m.content+' '+m.category).toLowerCase().includes(q));document.getElementById('allList').innerHTML=arr.length?arr.slice().sort((a,b)=>b.date-a.date).map(card).join(''):'<div class="empty">Ничего не найдено.</div>'}
+function renderPending(){const el=document.getElementById('pendingList');el.innerHTML=pending.length?pending.map(p=>`<div class="suggestion"><div class="card-top"><span class="tag">Требует подтверждения</span><span class="muted" style="font-size:10px">${dateLabel(p.date)}</span></div><p>${esc(p.text)}</p><div class="suggestion-actions"><button class="btn primary small" onclick="approve('${p.id}')">Сохранить в память</button><button class="btn danger small" onclick="reject('${p.id}')">Отклонить</button></div></div>`).join(''):'<div class="empty">Нет предложений на проверку.</div>'}
+function go(name){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===name));if(name==='search')doSearch();window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+function openAdd(){document.getElementById('addModal').classList.add('show');setTimeout(()=>document.getElementById('title').focus(),50)}
+function closeAdd(){document.getElementById('addModal').classList.remove('show')}
+document.getElementById('addForm').addEventListener('submit',e=>{e.preventDefault();const m={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),title:document.getElementById('title').value.trim(),content:document.getElementById('content').value.trim(),category:document.getElementById('category').value,kind:document.getElementById('kind').value,date:Date.now()};if(!m.title||!m.content)return;memories.unshift(m);save();e.target.reset();closeAdd();toast('Сохранено в твоей памяти')});
+function deleteMemory(id){if(!confirm('Удалить это воспоминание?'))return;memories=memories.filter(m=>m.id!==id);save();toast('Запись удалена')}
+function addPending(){const t=document.getElementById('pendingText').value.trim();if(!t){toast('Сначала добавь текст');return}pending.unshift({id:String(Date.now()),text:t,date:Date.now()});document.getElementById('pendingText').value='';save();toast('Добавлено на проверку')}
+function approve(id){const p=pending.find(x=>x.id===id);if(!p)return;memories.unshift({id:String(Date.now()),title:p.text.slice(0,55)+(p.text.length>55?'…':''),content:p.text,category:'Личное',kind:'подтверждённое',date:Date.now()});pending=pending.filter(x=>x.id!==id);save();toast('Подтверждено и сохранено')}
+function reject(id){pending=pending.filter(x=>x.id!==id);save();toast('Предложение отклонено')}
+
+function guessCategory(text){
+  const t=text.toLowerCase();
+  if(/работ|клиент|заказ|проект|звон|работодатель|сайт|бизнес/.test(t)) return 'Работа';
+  if(/уч(у|ё)сь|изуч|курс|обуч|книг|навык|программирован/.test(t)) return 'Обучение';
+  if(/хочу|планир|цель|надо будет|следующ|собираюсь/.test(t)) return 'Планы';
+  if(/идея|придумал|можно создать|стартап/.test(t)) return 'Идеи';
+  return 'Другое';
+}
+function isSensitive(text){
+  return /(здоров|болезн|диагноз|лекарств|врач|медицин|деньг|зарплат|доход|долг|кредит|банк|парол|паспорт|адрес|телефон|встреч|договорил|обещал|обязательств|личн(ая|ые) жизнь)/i.test(text);
+}
+function splitThoughts(text){
+  return text.replace(/\r/g,' ').split(/(?<=[.!?])\s+|\n+/).map(s=>s.trim()).filter(s=>s.length>=12).slice(0,30);
+}
+function analyzeText(){
+  const raw=document.getElementById('engineInput').value.trim();
+  const results=document.getElementById('engineResults');
+  const status=document.getElementById('engineStatus');
+  if(!raw){status.textContent='Сначала вставь текст для анализа.';return}
+  const parts=splitThoughts(raw);
+  if(!parts.length){status.textContent='Не удалось выделить отдельные фрагменты. Добавь более длинный текст.';return}
+  window.engineCandidates=parts.map((text,i)=>({id:'candidate_'+Date.now()+'_'+i,text,category:guessCategory(text),sensitive:isSensitive(text)}));
+  status.textContent='Найдено фрагментов: '+parts.length+'. Проверь каждый перед сохранением.';
+  results.innerHTML=window.engineCandidates.map((c,i)=>`<div class="suggestion" style="border-color:${c.sensitive?'#806342':'#39415e'}"><div class="card-top"><span class="tag">${c.sensitive?'Личное — нужна проверка':esc(c.category)}</span><span class="muted" style="font-size:10px">Фрагмент ${i+1}</span></div><p>${esc(c.text)}</p><div class="suggestion-actions">${c.sensitive?`<button class="btn primary small" onclick="candidateToReview(${i})">Отправить на проверку</button>`:`<button class="btn primary small" onclick="saveCandidate(${i})">Сохранить в память</button><button class="btn small" onclick="candidateToReview(${i})">На проверку</button>`}<button class="btn danger small" onclick="ignoreCandidate(${i})">Не сохранять</button></div></div>`).join('');
+}
+function saveCandidate(i){
+  const c=window.engineCandidates?.[i];if(!c)return;
+  if(c.sensitive){toast('Этот фрагмент можно только отправить на проверку');return}
+  memories.unshift({id:String(Date.now())+'_'+i,title:c.text.slice(0,55)+(c.text.length>55?'…':''),content:c.text,category:c.category,kind:'из разбора текста',date:Date.now()});
+  window.engineCandidates[i]=null;save();renderEngineCandidates();toast('Фрагмент сохранён');
+}
+function candidateToReview(i){
+  const c=window.engineCandidates?.[i];if(!c)return;
+  pending.unshift({id:String(Date.now())+'_'+i,text:c.text,date:Date.now()});
+  window.engineCandidates[i]=null;save();renderEngineCandidates();toast('Отправлено на проверку');
+}
+function ignoreCandidate(i){
+  if(!window.engineCandidates?.[i])return;
+  window.engineCandidates[i]=null;renderEngineCandidates();
+}
+function renderEngineCandidates(){
+  const arr=window.engineCandidates||[];
+  const results=document.getElementById('engineResults');
+  const left=arr.filter(Boolean);
+  if(!left.length){results.innerHTML='<div class="empty">Все фрагменты обработаны. Можешь вставить новый текст.</div>';return}
+  results.innerHTML=arr.map((c,i)=>c?`<div class="suggestion" style="border-color:${c.sensitive?'#806342':'#39415e'}"><div class="card-top"><span class="tag">${c.sensitive?'Личное — нужна проверка':esc(c.category)}</span><span class="muted" style="font-size:10px">Фрагмент ${i+1}</span></div><p>${esc(c.text)}</p><div class="suggestion-actions">${c.sensitive?`<button class="btn primary small" onclick="candidateToReview(${i})">Отправить на проверку</button>`:`<button class="btn primary small" onclick="saveCandidate(${i})">Сохранить в память</button><button class="btn small" onclick="candidateToReview(${i})">На проверку</button>`}<button class="btn danger small" onclick="ignoreCandidate(${i})">Не сохранять</button></div></div>`:'').join('');
+}
+
+function doSearch(){const q=(document.getElementById('query')?.value||'').trim().toLowerCase();const arr=q?memories.filter(m=>(m.title+' '+m.content+' '+m.category).toLowerCase().includes(q)):memories.slice().sort((a,b)=>b.date-a.date).slice(0,6);const el=document.getElementById('searchResults');if(el)el.innerHTML=arr.length?arr.map(card).join(''):'<div class="empty">Совпадений не найдено. Попробуй другие слова.</div>'}
+function exportData(){const blob=new Blob([JSON.stringify({memories,pending,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='secondbrain-memory.json';a.click();URL.revokeObjectURL(a.href);toast('Экспорт подготовлен')}
+function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.memories)||!Array.isArray(d.pending))throw Error();memories=d.memories;pending=d.pending;save();toast('Импорт завершён')}catch(err){toast('Не удалось прочитать этот JSON-файл')}e.target.value=''};r.readAsText(f)}
+function clearAll(){if(!confirm('Удалить все воспоминания и предложения? Это действие нельзя отменить.'))return;memories=[];pending=[];save();toast('Все данные удалены')}
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2300)}
+load();
+</script>
+</body>
+</html>
